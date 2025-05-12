@@ -1,204 +1,254 @@
-# Experiment 4: Aggregate Functions, Group By and Having Clause
+# Experiment 5: Subqueries and Views
 
 ## AIM
-To study and implement aggregate functions, GROUP BY, and HAVING clause with suitable examples.
+To study and implement subqueries and views.
 
 ## THEORY
 
-### Aggregate Functions
-These perform calculations on a set of values and return a single value.
+### Subqueries
+A subquery is a query inside another SQL query and is embedded in:
+- WHERE clause
+- HAVING clause
+- FROM clause
 
-- **MIN()** – Smallest value  
-- **MAX()** – Largest value  
-- **COUNT()** – Number of rows  
-- **SUM()** – Total of values  
-- **AVG()** – Average of values
+**Types:**
+- **Single-row subquery**:
+  Sub queries can also return more than one value. Such results should be made use along with the operators in and any.
+- **Multiple-row subquery**:
+  Here more than one subquery is used. These multiple sub queries are combined by means of ‘and’ & ‘or’ keywords.
+- **Correlated subquery**:
+  A subquery is evaluated once for the entire parent statement whereas a correlated Sub query is evaluated once per row processed by the parent statement.
 
-**Syntax:**
+**Example:**
 ```sql
-SELECT AGG_FUNC(column_name) FROM table_name WHERE condition;
+SELECT * FROM employees
+WHERE salary > (SELECT AVG(salary) FROM employees);
 ```
-### GROUP BY
-Groups records with the same values in specified columns.
-**Syntax:**
+### Views
+A view is a virtual table based on the result of an SQL SELECT query.
+**Create View:**
 ```sql
-SELECT column_name, AGG_FUNC(column_name)
-FROM table_name
-GROUP BY column_name;
+CREATE VIEW view_name AS
+SELECT column1, column2 FROM table_name WHERE condition;
 ```
-### HAVING
-Filters the grouped records based on aggregate conditions.
-**Syntax:**
+**Drop View:**
 ```sql
-SELECT column_name, AGG_FUNC(column_name)
-FROM table_name
-GROUP BY column_name
-HAVING condition;
+DROP VIEW view_name;
 ```
 
 **Question 1**
 --
-![Screenshot 2025-04-29 173049](https://github.com/user-attachments/assets/53bcfb64-4be8-4ba0-81d3-7a475f0cc255)
+
+
+![Screenshot 2025-04-29 141038](https://github.com/user-attachments/assets/c35dd010-6f7b-41ec-81c3-2563667a3b40)
 
 
 ```sql
-select PatientID, count(*) as TotalAppointments
-from Appointments
-group by PatientID ;
-
+select * from CUSTOMERS
+where ADDRESS = 'Delhi';
 ```
 
 **Output:**
 
-![Screenshot 2025-04-29 173113](https://github.com/user-attachments/assets/4b46fcd2-6f06-4361-8840-30e74b2e1a7d)
+![Screenshot 2025-04-29 141049](https://github.com/user-attachments/assets/39392372-2706-45e7-8153-968c7ba2e34d)
 
 
 **Question 2**
 ---
-![Screenshot 2025-04-29 173125](https://github.com/user-attachments/assets/c214c29a-3696-4a1f-abcc-e30acc76bcbd)
+
+
+![Screenshot 2025-04-29 141107](https://github.com/user-attachments/assets/75113eda-b685-4c99-ab69-cff61cdb14c4)
 
 
 ```sql
-select Specialty, avg(DATEDIFF(YEAR, DateOfBirth, GETDATE())) as AvgAge
-from Doctors
-group by Specialty;
+SELECT s.salesman_id, s.name
+FROM salesman s
+JOIN customer c ON s.salesman_id = c.salesman_id
+GROUP BY s.salesman_id, s.name
+HAVING COUNT(c.customer_id) > 1;
 ```
 
 **Output:**
 
-![Screenshot 2025-04-29 173210](https://github.com/user-attachments/assets/6864e6c8-6721-4b74-bb22-d9c1b38597d1)
+![Screenshot 2025-04-29 141116](https://github.com/user-attachments/assets/5c0a6297-ead0-4ce5-a086-6df1694318df)
 
 
 **Question 3**
 ---
-![Screenshot 2025-04-29 173153](https://github.com/user-attachments/assets/a90426c1-e3a3-4c71-ae8c-8ec02fb98847)
+
+
+![Screenshot 2025-04-29 141127](https://github.com/user-attachments/assets/525060e6-0f85-4b02-bed6-e78cb5e010b9)
 
 
 ```sql
-select PatientID, sum(length(Medications) - length(replace(Medications, ',', '')) + 1 )::int as AvgMedications
-from MedicalRecords
-group by 
-PatientID ;
+SELECT o.ord_no, o.purch_amt, o.ord_date, o.customer_id, o.salesman_id
+FROM orders o
+JOIN salesman s ON o.salesman_id = s.salesman_id
+WHERE s.name='Paul Adam';
 ```
 
 **Output:**
 
-![Screenshot 2025-04-29 173223](https://github.com/user-attachments/assets/7febec02-926d-4f35-8988-41f580b3b852)
+![Screenshot 2025-04-29 141137](https://github.com/user-attachments/assets/25363768-e7d8-4025-b003-b5f6095f07c4)
 
 
 **Question 4**
 ---
-![Screenshot 2025-04-29 173204](https://github.com/user-attachments/assets/811d7d4e-ff2d-4ec6-b385-03d7cbdcd42a)
+
+
+![Screenshot 2025-04-29 141146](https://github.com/user-attachments/assets/4c2365c6-ecec-4c5c-9759-4ce01b1b4459)
 
 
 ```sql
-select avg(length(name)) as 
-avg_name_length
-from customer
-where city = 'Chennai';
+SELECT o.ord_no, o.purch_amt, o.ord_date, o.salesman_id
+FROM orders o
+JOIN salesman s ON o.salesman_id = s.salesman_id
+WHERE s.commission = (
+    SELECT MAX(commission)
+    FROM salesman
+);
 ```
 
 **Output:**
 
-![Screenshot 2025-04-29 173210](https://github.com/user-attachments/assets/7c4f3089-e03c-4a2c-8e53-157ca92e1e95)
+
+
+![Screenshot 2025-04-29 141159](https://github.com/user-attachments/assets/dd030e9c-9b01-46c3-8419-b6605399ddd9)
 
 
 **Question 5**
 ---
-![Screenshot 2025-04-29 173216](https://github.com/user-attachments/assets/82af1fe5-1353-4cc6-8535-bfcd2c290703)
+
+
+![Screenshot 2025-04-29 141211](https://github.com/user-attachments/assets/42ab71b9-eb56-457f-ae98-f4b412edd8c2)
 
 
 ```sql
-select avg(income) as avg_income
-from employee
-where name like 'A%';
+select * from CUSTOMERS
+where SALARY = 1500;
 ```
 
 **Output:**
-![Screenshot 2025-04-29 173223](https://github.com/user-attachments/assets/e75add66-1e8b-45c6-9f7e-21cdec34b501)
 
+
+![Screenshot 2025-04-29 141221](https://github.com/user-attachments/assets/a9f928d4-2b00-453a-9f66-6dd019242608)
 
 
 **Question 6**
 ---
-![Screenshot 2025-04-29 173229](https://github.com/user-attachments/assets/ce7c1913-1a1a-4afc-ba93-8fb8e1254287)
+
+
+![Screenshot 2025-04-29 141230](https://github.com/user-attachments/assets/7662c4f1-4b50-4296-ae13-75a966ef12e2)
 
 
 ```sql
-select count(distinct salesman_id) as COUNT
-from orders ;
+SELECT ord_no, purch_amt, ord_date, customer_id, salesman_id
+FROM ORDERS
+WHERE purch_amt > (
+    SELECT AVG(purch_amt)
+    FROM ORDERS
+    WHERE ord_date ='2012-10-10'
+);
 ```
 
 **Output:**
 
-![Screenshot 2025-04-29 173236](https://github.com/user-attachments/assets/3db650f2-dddf-493a-bf54-58f38be33bb7)
+
+![Screenshot 2025-04-29 141238](https://github.com/user-attachments/assets/e5f7efa8-0f3e-4e72-b5ff-196ca827a0e2)
 
 
 **Question 7**
 ---
-![Screenshot 2025-04-29 173246](https://github.com/user-attachments/assets/d33eb8d6-fc0a-4cc7-8fc8-54f004430fbe)
+
+
+![Screenshot 2025-04-29 141245](https://github.com/user-attachments/assets/712bf45c-d7cd-4128-97c1-b66680adb209)
 
 
 ```sql
-select avg(length(email)) as avg_email_length_below_30
-from customer
-where city = 'Mumbai';
+SELECT name, city
+FROM customer
+WHERE city IN (
+    SELECT city
+    FROM customer
+    WHERE id IN (3,7)
+);
 ```
 
 **Output:**
 
-![Screenshot 2025-04-29 173252](https://github.com/user-attachments/assets/218a1813-966e-4ff0-9807-84ea1d4c3e1f)
+
+![Screenshot 2025-04-29 141252](https://github.com/user-attachments/assets/d1dd3642-3746-4fbe-a5d4-79fd03b778b7)
 
 
 **Question 8**
 ---
-![Screenshot 2025-04-29 173300](https://github.com/user-attachments/assets/fd8fcac2-92d5-4b31-b98c-f155922f635f)
+
+
+![Screenshot 2025-04-29 141303](https://github.com/user-attachments/assets/37ea3736-54c7-4d85-8952-0dcbf43e3d2b)
 
 
 ```sql
-select age, SUM(income)
-from employee
-group by age
-having SUM(income) > 1000000 ;
+SELECT student_name, grade
+FROM GRADES g1
+WHERE grade = (
+    SELECT MIN(grade)
+    FROM GRADES g2
+    WHERE g2.subject = g1.subject
+);
 ```
 
 **Output:**
-![Screenshot 2025-04-29 173308](https://github.com/user-attachments/assets/a6597985-53b5-429c-948a-f2d37c38dde5)
+
+
+![Screenshot 2025-04-29 141312](https://github.com/user-attachments/assets/dc46652f-18a9-4e62-8001-5c4ee513cd44)
 
 
 **Question 9**
 ---
-![Screenshot 2025-04-29 173318](https://github.com/user-attachments/assets/5f417505-f0ac-443c-9554-5fb404f2cf44)
 
+
+![Screenshot 2025-04-29 141324](https://github.com/user-attachments/assets/2a6b5c7d-fda0-4984-8441-0a84af9465b1)
 
 ```sql
-select category_id, SUM(price * category_id) as Revenue
-from products
-group by category_id
-having SUM(price * category_id) > 25 ;l
-
+SELECT *
+FROM customer
+WHERE city <> (
+    SELECT city
+    FROM customer
+    WHERE id = (SELECT MAX(id) FROM customer)
+);
 ```
 
 **Output:**
-![Screenshot 2025-04-29 173325](https://github.com/user-attachments/assets/08b6b6fb-e02f-4e11-b5f2-df710397cbec)
 
+
+
+![Screenshot 2025-04-29 141332](https://github.com/user-attachments/assets/17931586-0016-4576-991a-e2887f36ed6f)
 
 
 **Question 10**
 ---
-![Screenshot 2025-04-29 173333](https://github.com/user-attachments/assets/ae2191d6-df9c-4649-a8aa-a3fb3152d6c4)
+
+
+![Screenshot 2025-04-29 141342](https://github.com/user-attachments/assets/77ce1581-266f-48e9-8f3a-2dbfd8195218)
 
 
 ```sql
-select category_id, SUM(price) as Total_Cost
-from products
-group by category_id
-having SUM(price) > 50 ;
+SELECT *
+FROM Grades g
+WHERE grade = (
+    SELECT MAX(grade)
+    FROM Grades
+    WHERE subject = g.subject
+);
 ```
 
 **Output:**
 
-![Screenshot 2025-04-29 173340](https://github.com/user-attachments/assets/8c976ead-4dc6-4914-8659-98b3dc2242f6)
+
+![Screenshot 2025-04-29 141348](https://github.com/user-attachments/assets/2c7782ad-7eff-45e2-9218-210a5691d27f)
+
+
 
 ## RESULT
-Thus, the SQL queries to implement aggregate functions, GROUP BY, and HAVING clause have been executed successfully.
+Thus, the SQL queries to implement subqueries and views have been executed successfully.
