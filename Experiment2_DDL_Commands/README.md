@@ -213,6 +213,7 @@ DepartmentName TEXT
 
 
 sql
+---
 select *from Out_of_print_books
 union all
 select *from Books
@@ -230,6 +231,7 @@ select *from Books
 
 
 sql
+---
 CREATE TABLE item (  
     item_id TEXT PRIMARY KEY,  
     item_desc TEXT NOT NULL,  
@@ -252,6 +254,7 @@ CREATE TABLE item (
 
 
 sql
+---
 ALTER TABLE employee
 ADD COLUMN designation varchar(50);
 
@@ -267,6 +270,7 @@ ADD COLUMN designation varchar(50);
 
 
 sql
+---
 INSERT INTO Products (ProductID, Name, Category)  
 VALUES (104, 'Tablet', 'Electronics');
 
