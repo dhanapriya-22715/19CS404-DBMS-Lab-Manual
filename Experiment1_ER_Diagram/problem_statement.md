@@ -115,3 +115,6 @@ This ER diagram provides a good foundation for a student registration system, ca
 However, depending on the specific requirements, further refinement might be needed, especially in areas like billing and a clearer
 definition of the 'TYPE' attribute in the REGISTRATION entity.
 ```
+## Result:
+
+A Database to Hospital Management is created Successfully.
