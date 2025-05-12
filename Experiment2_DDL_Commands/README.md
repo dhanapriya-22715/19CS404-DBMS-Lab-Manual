@@ -286,6 +286,7 @@ VALUES (104, 'Tablet', 'Electronics');
 
 
 sql
+---
 CREATE TABLE Employees(
 EmployeeID INTEGER primary key,
 FirstName INTEGER NOT NULL,
